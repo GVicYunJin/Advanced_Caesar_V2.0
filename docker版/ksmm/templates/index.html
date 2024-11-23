@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>复杂加密算法V2.0</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #000000, #001f3f); /* 背景色加深到更深的蓝色 */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(to right, #ff7eb9, #6a5bff); /* 线性渐变字体颜色 */
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: linear-gradient(to right, #800080, #b452cd); /* 按钮颜色橙色和青色渐变 */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: linear-gradient(to right, #b452cd, #800080); /* 橙色和青色更深的渐变 */
+        }
+
+        .output-area {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            font-size: 1.1rem;
+            height: 150px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>复杂加密算法V2.0</h1>
+
+    <div class="container">
+        <div class="input-group">
+            <label for="inputText">输入文本：</label>
+            <textarea id="inputText" rows="5"></textarea>
+        </div>
+
+        <div class="input-group">
+            <label for="key">密钥：</label>
+            <input type="text" id="key">
+        </div>
+
+        <button id="encryptButton">加密</button>
+        <button id="decryptButton">解密</button>
+
+        <div class="output-area" id="outputArea"></div>
+    </div>
+
+    <script>
+        const encryptButton = document.getElementById('encryptButton');
+        const decryptButton = document.getElementById('decryptButton');
+        const inputText = document.getElementById('inputText');
+        const keyInput = document.getElementById('key');
+        const outputArea = document.getElementById('outputArea');
+
+        // 加密操作
+        encryptButton.addEventListener('click', () => {
+            const text = inputText.value;
+            const key = keyInput.value;
+            if (text && key) {
+                fetch('/encrypt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text: text, key: key })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    outputArea.textContent = data.encryptedText;
+                })
+                .catch(err => {
+                    alert("加密失败：" + err);
+                });
+            } else {
+                alert("请输入文本和密钥！");
+            }
+        });
+
+        // 解密操作
+        decryptButton.addEventListener('click', () => {
+            const text = inputText.value;
+            const key = keyInput.value;
+            if (text && key) {
+                fetch('/decrypt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text: text, key: key })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    outputArea.textContent = data.decryptedText;
+                })
+                .catch(err => {
+                    alert("解密失败：" + err);
+                });
+            } else {
+                alert("请输入文本和密钥！");
+            }
+        });
+    </script>
+</body>
+</html>
